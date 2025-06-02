@@ -56,9 +56,15 @@ module Navigation =
         { Coords = []; Center = (0, 0); Facing = North; Name = Spy }
 
     let getNextDirection (current: Direction) (rotation: Rotation) : Direction =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
-        North
+        match (current, rotation) with
+        | (North, Clockwise) -> East
+        | (East, Clockwise) -> South
+        | (South, Clockwise) -> West
+        | (West, Clockwise) -> North
+        | (North, Counterclockwise) -> West
+        | (East, Counterclockwise) -> North
+        | (South, Counterclockwise) -> East
+        | (West, Counterclockwise) -> South
 
     let canRotateForward (ship: Ship) (rotation: Rotation) (grid: Sector Grid) : bool =
         (* ------- À COMPLÉTER ------- *)
