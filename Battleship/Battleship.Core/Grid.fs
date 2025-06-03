@@ -12,15 +12,15 @@ module Grid =
     (* --- Nouvelles fonctions --- *)
 
     let elementAt (g : 'a Grid) (x : int) (y : int) : 'a option =
-        let rec loopColumn g y = 
+        let rec loopColumn g x = 
             match g with
             | Empty -> None
-            | Row(l, n) when y = 0 -> 
-                let rec loopRow l i =
+            | Row(l, n) when x = 0 -> 
+                let rec loopRow l j =
                     match l with
                     | [] -> None
-                    | h::t when i = 0 -> Some h
-                    | h::t -> loopRow t (i-1)
-                loopRow l x
-            | Row(l, n) -> loopColumn n (y-1)
-        loopColumn g y
+                    | h::t when j = 0 -> Some h
+                    | h::t -> loopRow t (j-1)
+                loopRow l y
+            | Row(l, n) -> loopColumn n (x-1)
+        loopColumn g x
