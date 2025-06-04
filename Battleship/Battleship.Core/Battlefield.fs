@@ -26,9 +26,10 @@ module Battlefield =
         Empty
 
     let getSelectedName (coord: Coord) (grid: Sector Grid) : Name option =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
-        None
+        match elementAt grid (fst coord) (snd coord) with
+        | None -> None
+        | Some Clear -> None
+        | Some (Active (name,_)) -> Some name
 
     let extractData (grid: Sector Grid) : Data =
         (* ------- À COMPLÉTER ------- *)
