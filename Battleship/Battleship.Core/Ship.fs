@@ -18,10 +18,28 @@ module Ship =
         | West
 
     type Ship = {Coords: Coord list; Center: Coord; Facing: Direction; Name: Name}
-
-    (* ------- À COMPLÉTER ------- *)
-    (* --- Nouvelles fonctions --- *)
-
+    
+    let getDimShip (ship: Ship) : int =
+        match ship.Name with
+            | Spy -> 2 
+            | PatrolBoat -> 2
+            | Destroyer -> 3 
+            | Submarine -> 3
+            | Cruiser -> 4
+            | AircraftCarrier -> 5
+    
+    //À mettre dans Grid?
+    // let verifInGrid (dim_grid: Dims) (coord: Coord) : bool =
+    //     let (a,b) = dim_grid
+    //     let (x,y) = coord
+    //     let infBool first sec =
+    //         match first with
+    //         | 
+        
+        
+        
+    
+    //Ajouter getDimShip dedans pour réduire?
     let createShip (center: Coord) (facing: Direction) (name: Name) : Ship =
         let (acc,k) =
             match name with
@@ -58,7 +76,35 @@ module Ship =
         
         {Coords = listeC; Center = center; Facing = facing; Name = name}
 
+    //Reste à retirer coords à l'extérieur de la grille
     let getPerimeter (ship: Ship) (dims: Dims) : Coord list =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
-        []
+        let coord_list = ship.Coords
+        let getCoordFirst listeF =
+            match listeF with
+            | [] -> failwith "La liste est vide"
+            | (a,b)::reste -> (a,b)
+        let rec getCoordLast listeL =
+            match listeL with
+            | [] -> failwith "La liste est vide"
+            | [(a,b)] -> (a,b)
+            | (a,b)::reste -> getCoordLast reste
+        let ((x,y), sens) =
+            match ship.Facing with
+            | North -> (getCoordFirst coord_list, North)
+            | South -> (getCoordLast coord_list, South)
+            | East -> (getCoordFirst coord_list, East)
+            | West -> (getCoordLast coord_list, West)
+        let dimShip = getDimShip ship
+        let liste_repV = [(x-1,y); (x+dimShip,y)]
+        let liste_repH = [(x,y+1); (x,y-dimShip)]
+        let rec prepListeV liste_rep acc dim =
+            match dim with
+            | 0 -> liste_rep
+            | _ -> (x+acc,y+1)::(x+acc,y-1)::(prepListeV liste_rep (acc+1) (dim-1))
+        let rec prepListeH liste_rep acc dim =
+            match dim with
+            | 0 -> liste_rep
+            | _ -> (x+1,y-acc)::(x-1,y-acc)::(prepListeH liste_rep (acc+1) (dim-1))
+        match sens with
+            | North | South -> prepListeV liste_repV 0 dimShip
+            | East | West -> prepListeH liste_repH 0 dimShip
