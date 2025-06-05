@@ -28,17 +28,7 @@ module Ship =
             | Cruiser -> 4
             | AircraftCarrier -> 5
     
-    //À mettre dans Grid?
-    // let verifInGrid (dim_grid: Dims) (coord: Coord) : bool =
-    //     let (a,b) = dim_grid
-    //     let (x,y) = coord
-    //     let infBool first sec =
-    //         match first with
-    //         | 
         
-        
-        
-    
     //Ajouter getDimShip dedans pour réduire?
     let createShip (center: Coord) (facing: Direction) (name: Name) : Ship =
         let (acc,k) =

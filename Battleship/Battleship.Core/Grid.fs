@@ -24,3 +24,10 @@ module Grid =
                 loopRow l y
             | Row(l, n) -> loopColumn n (x-1)
         loopColumn g x
+    
+    let verifInGrid (dim_grid: Dims) (coord: Coord) : bool =
+         let (a,b) = dim_grid
+         let (x,y) = coord
+         match (x > a-1) with
+         | true -> false
+         | false -> not (y > b-1)
