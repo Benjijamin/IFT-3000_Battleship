@@ -66,7 +66,7 @@ module Ship =
         
         {Coords = listeC; Center = center; Facing = facing; Name = name}
 
-    //Reste à retirer coords à l'extérieur de la grille
+    //Sortir fonction pour filtrer liste de coord?
     let getPerimeter (ship: Ship) (dims: Dims) : Coord list =
         let coord_list = ship.Coords
         let getCoordFirst listeF =
@@ -88,13 +88,26 @@ module Ship =
         let liste_repV = [(x-1,y); (x+dimShip,y)]
         let liste_repH = [(x,y+1); (x,y-dimShip)]
         let rec prepListeV liste_rep acc dim =
-            match dim with
+            match (dim+2) with
             | 0 -> liste_rep
             | _ -> (x+acc,y+1)::(x+acc,y-1)::(prepListeV liste_rep (acc+1) (dim-1))
         let rec prepListeH liste_rep acc dim =
-            match dim with
+            match (dim+2) with
             | 0 -> liste_rep
             | _ -> (x+1,y-acc)::(x-1,y-acc)::(prepListeH liste_rep (acc+1) (dim-1))
-        match sens with
-            | North | South -> prepListeV liste_repV 0 dimShip
-            | East | West -> prepListeH liste_repH 0 dimShip
+        
+        let listeA =
+            match sens with
+            | North | South -> prepListeV liste_repV -1 dimShip
+            | East | West -> prepListeH liste_repH -1 dimShip
+        
+        let rec filtrage listeNF listeCRep =
+            match listeNF with
+            | [] -> listeCRep
+            | (a,b)::reste when (verifInGrid dims (a,b)) ->
+                begin
+                    let listeCRep = (a,b)::listeCRep
+                    filtrage reste listeCRep
+                end
+            | (a,b)::reste -> filtrage reste listeCRep
+        filtrage listeA []
