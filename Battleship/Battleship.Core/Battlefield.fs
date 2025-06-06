@@ -108,9 +108,17 @@ module Battlefield =
 
             loop (snd pieces) centerId
 
+        //On parcours la grille et recreate les bateaux qui ont des morceaux
+        let createShips (grid : Sector Grid) : Ship list = 
+            let shipPieces = groupShips (getActiveSectors (grid))
+            let rec loop sp l = 
+                match sp with
+                | [] -> l
+                | (n, [])::t -> loop t l
+                | (n, p)::t -> loop t (l@[createShip (findShipCenter (n,p)) (directionFromPieces (n, p)) n]) 
+            loop shipPieces []
 
-
-        { Dims = (0, 0); Ships = [] }
+        { Dims = getGridDims grid; Ships = createShips grid }
 
     let loadData (data: Data) : Sector Grid =
         (* ------- À COMPLÉTER ------- *)
