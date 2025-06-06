@@ -35,3 +35,16 @@ module Grid =
          match bool_first with
          | true -> (x >= 0) && (y >= 0)
          | false -> false
+
+    let getGridDims (grid: 'a Grid) : Dims =
+        let rec loopX l x =
+            match l with
+            | [] -> x
+            | h::t -> loopX t (x+1)
+
+        let rec loopY g x y =
+            match g with
+            | Empty -> (x, y)
+            | Row(l, Empty) -> (loopX l 0, y+1)
+            | Row(l, n) -> loopY n (x) (y+1)
+        loopY grid (0) (0)
