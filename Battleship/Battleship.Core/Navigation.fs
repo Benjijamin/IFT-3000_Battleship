@@ -44,10 +44,7 @@ module Navigation =
         let theShip = createShip center direction name 
         let (theDim_hauteur, theDim_largeur) = getGridDim grid
 
-        // Verifier si tout les coordonnees sont dans la grille
-        let dansDim = List.forall (fun (x, y) -> x >= 0 && x < theDim_hauteur && y >= 0 && y < theDim_largeur) theShip.Coords //bool
-
-        // Aucune coordonnees ne peut partager une cellule avec un autre bateau
+        // Aucune coordonnees ne peut partager une cellule avec un autre bateau + verifier si coordonnees dans la grille
         let theShipDispo = verifListeCoordDispo theShip.Coords grid theShip //bool
 
         // Aucune coordonnees ne peut partager une cellule avec le parametre d'un autre bateau
@@ -59,6 +56,9 @@ module Navigation =
 
     let canMove (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
         
+
+
+
         false
 
     let move (ship: Ship) (direction: Direction) : Ship =
