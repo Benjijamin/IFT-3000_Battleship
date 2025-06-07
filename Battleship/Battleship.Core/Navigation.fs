@@ -19,8 +19,17 @@ module Navigation =
 
     (* ------- À COMPLÉTER ------- *)
     (* --- Nouvelles fonctions --- *)
+    
+    let rec getGridDim (grid: Sector Grid) : Coord =
+         match grid with
+            | Empty -> (0, 0) 
+            | Row(line, reste) ->
+                let hauteur_reste, _ = getGridDims reste
+                let hauteur = 1 + hauteur_reste
+                let largeur = List.length line
+                (hauteur, largeur)
 
-    let rec verifListeCoordDispo (listeCoord: Coord list) (grille: Sector Grid) (boat: Ship)=
+    let rec verifListeCoordDispo (listeCoord: Coord list) (grille: Sector Grid) (boat: Ship) : bool =
             let nomShip = boat.Name
             match listeCoord with
             | [] -> true
@@ -30,9 +39,23 @@ module Navigation =
                                | _ -> false)
     
     let canPlace (center: Coord) (direction: Direction) (name: Name) (grid: Sector Grid) : bool =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
-        false
+        
+        // Creer le bateau
+        let theShip = createShip center direction name 
+        let (theDim_hauteur, theDim_largeur) = getGridDim grid
+
+        // Verifier si tout les coordonnees sont dans la grille
+        let dansDim = List.forall (fun (x, y) -> x >= 0 && x < theDim_hauteur && y >= 0 && y < theDim_largeur) theShip.Coords //bool
+
+        // Aucune coordonnees ne peut partager une cellule avec un autre bateau
+        let theShipDispo = verifListeCoordDispo theShip.Coords grid theShip //bool
+
+        // Aucune coordonnees ne peut partager une cellule avec le parametre d'un autre bateau
+        let theShipParamater = getPerimeter theShip (theDim_hauteur, theDim_largeur) //Parametre
+        let perimeterDispo = verifListeCoordDispo theShipParamater grid theShip //bool
+
+         // Retourner vrai si tout est OK
+        dansDim && theShipDispo && perimeterDispo
 
     let canMove (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
         
