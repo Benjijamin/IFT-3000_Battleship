@@ -26,8 +26,7 @@ module Navigation =
         false
 
     let canMove (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
+        
         false
 
     let move (ship: Ship) (direction: Direction) : Ship =
@@ -36,9 +35,16 @@ module Navigation =
         { Coords = []; Center = (0, 0); Facing = North; Name = Spy }
 
     let canRotate (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
-        false
+        let nomShip = ship.Name
+        let boat = createShip ship.Center direction nomShip
+        let rec verifListeCoordDispo listeCoord =
+            match listeCoord with
+            | [] -> true
+            | (b,c)::reste -> (match (elementAt grid b c) with
+                               | Some (Active (nom, _)) when (nom=nomShip) -> verifListeCoordDispo reste
+                               | Some Clear -> verifListeCoordDispo reste
+                               | _ -> false)
+        verifListeCoordDispo boat.Coords
 
     let rotate (ship: Ship) (direction: Direction) : Ship =
         (* ------- À COMPLÉTER ------- *)

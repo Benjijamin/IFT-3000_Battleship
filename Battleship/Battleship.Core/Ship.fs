@@ -28,18 +28,18 @@ module Ship =
             | Cruiser -> 4
             | AircraftCarrier -> 5
     
+    let getDimKShip (name: Name) : int*int =
+        match name with
+        | Spy -> (2,0) 
+        | PatrolBoat -> (2,0) 
+        | Destroyer -> (3,1) 
+        | Submarine -> (3,1) 
+        | Cruiser -> (4,1) 
+        | AircraftCarrier -> (5,2)
         
     //Ajouter getDimShip dedans pour réduire?
     let createShip (center: Coord) (facing: Direction) (name: Name) : Ship =
-        let (acc,k) =
-            match name with
-            | Spy -> (2,0) 
-            | PatrolBoat -> (2,0) 
-            | Destroyer -> (3,1) 
-            | Submarine -> (3,1) 
-            | Cruiser -> (4,1) 
-            | AircraftCarrier -> (5,2) 
-        
+        let (acc,k) = getDimKShip name
         let rec creationE (a,b) (accP, kP) =
             match accP with
             | 0 -> []
