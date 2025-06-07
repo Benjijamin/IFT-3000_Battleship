@@ -20,6 +20,15 @@ module Navigation =
     (* ------- À COMPLÉTER ------- *)
     (* --- Nouvelles fonctions --- *)
 
+    let rec verifListeCoordDispo (listeCoord: Coord list) (grille: Sector Grid) (boat: Ship)=
+            let nomShip = boat.Name
+            match listeCoord with
+            | [] -> true
+            | (b,c)::reste -> (match (elementAt grille b c) with
+                               | Some (Active (nom, _)) when (nom= nomShip) -> verifListeCoordDispo reste grille boat
+                               | Some Clear -> verifListeCoordDispo reste grille boat
+                               | _ -> false)
+    
     let canPlace (center: Coord) (direction: Direction) (name: Name) (grid: Sector Grid) : bool =
         (* ------- À COMPLÉTER ------- *)
         (* ----- Implémentation ------ *)
@@ -39,14 +48,7 @@ module Navigation =
     let canRotate (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
         let nomShip = ship.Name
         let boat = createShip ship.Center direction nomShip
-        let rec verifListeCoordDispo listeCoord =
-            match listeCoord with
-            | [] -> true
-            | (b,c)::reste -> (match (elementAt grid b c) with
-                               | Some (Active (nom, _)) when (nom=nomShip) -> verifListeCoordDispo reste
-                               | Some Clear -> verifListeCoordDispo reste
-                               | _ -> false)
-        verifListeCoordDispo boat.Coords
+        verifListeCoordDispo boat.Coords grid ship
 
     let rotate (ship: Ship) (direction: Direction) : Ship =
         let (dim, k) = getDimKShip ship.Name
@@ -86,15 +88,38 @@ module Navigation =
         { Coords = listeC; Center = (x, y); Facing = direction; Name = ship.Name }
 
     let canMoveForward (ship: Ship) (grid: Sector Grid) : bool =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
-        false
+        let (xa, ya) = ship.Center
+        let (xb,yb) =
+            match ship.Facing with
+            | North -> (xa-1, ya)
+            | South -> (xa+1, ya)
+            | East -> (xa, ya+1)
+            | West -> (xa, ya-1)
+        let boat = createShip (xb,yb) ship.Facing ship.Name
+        verifListeCoordDispo boat.Coords grid ship
 
     let moveForward (ship: Ship) : Ship =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
+        // let (dim, k) = getDimKShip ship.Name
+        // let nbrFront = k
+        // let (xa, ya) = ship.Center
+        // let rec creationListeN liste acc =
+        //     match (liste, acc) with
+        //     | (_, 0) -> []
+        //     | ()
+        // let rec creationListeS liste accF accB accB2 accC =
+        //     
+        // let rec creationListeW liste accF accB accB2 accC =
+        //     
+        // let rec creationListeE liste accF accB accB2 accC =
+        //     
+        // let (listeC, centre) =
+        //     match direction with
+        //     | North -> (creationListeN [] dim, (xa-1,ya))
+        //     | South -> (creationListeS [] dim, (xa+1,ya))
+        //     | West -> (creationListeW [] dim, (xa,ya-1))
+        //     | East -> (creationListeE [] dim, (xa,ya+1))
+        // { Coords = listeC; Center = centre; Facing = ship.Facing; Name = ship.Name }
         { Coords = []; Center = (0, 0); Facing = North; Name = Spy }
-
     let getNextDirection (current: Direction) (rotation: Rotation) : Direction =
         match (current, rotation) with
         | (North, Clockwise) -> East
