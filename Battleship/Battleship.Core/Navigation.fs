@@ -33,7 +33,9 @@ module Navigation =
         (* ------- À COMPLÉTER ------- *)
         (* ----- Implémentation ------ *)
         { Coords = []; Center = (0, 0); Facing = North; Name = Spy }
-
+    
+    //Pour fonctions rotate et move : mettre à jour la grille?
+    //Comment vérifier si possible et MAJ si pas accès à la grille?
     let canRotate (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
         let nomShip = ship.Name
         let boat = createShip ship.Center direction nomShip
@@ -47,9 +49,41 @@ module Navigation =
         verifListeCoordDispo boat.Coords
 
     let rotate (ship: Ship) (direction: Direction) : Ship =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
-        { Coords = []; Center = (0, 0); Facing = North; Name = Spy }
+        let (dim, k) = getDimKShip ship.Name
+        let nbrFront = k
+        let nbrBack = dim - (nbrFront+1)
+        let (x,y) = ship.Center
+        let rec creationListeN liste accF accB accB2 accC =
+            match (accF, accB, accC) with
+            | (0,_,1) -> (ship.Center)::(creationListeN liste accF accB accB2 (accC-1))
+            | (0,b,0) when b <> 0 -> ((x+accB2),y)::(creationListeN liste accF (accB-1) (accB2+1) accC)
+            | (_,_,1) -> ((x-accF),y)::(creationListeN liste (accF-1) accB accB2 accC)
+            | (0,0,0) -> []
+        let rec creationListeS liste accF accB accB2 accC =
+            match (accF, accB, accC) with
+            | (0,_,1) -> (ship.Center)::(creationListeS liste accF accB accB2 (accC-1))
+            | (0,b,0) when b <> 0 -> ((x-accB2),y)::(creationListeS liste accF (accB-1) (accB2+1) accC)
+            | (_,_,1) -> ((x+accF),y)::(creationListeS liste (accF-1) accB accB2 accC)
+            | (0,0,0) -> []
+        let rec creationListeW liste accF accB accB2 accC =
+            match (accF, accB, accC) with
+            | (0,_,1) -> (ship.Center)::(creationListeW liste accF accB accB2 (accC-1))
+            | (0,b,0) when b <> 0 -> (x,(y+accB2))::(creationListeW liste accF (accB-1) (accB2+1) accC)
+            | (_,_,1) -> (x,(y-accF))::(creationListeW liste (accF-1) accB accB2 accC)
+            | (0,0,0) -> []
+        let rec creationListeE liste accF accB accB2 accC =
+            match (accF, accB, accC) with
+            | (0,_,1) -> (ship.Center)::(creationListeE liste accF accB accB2 (accC-1))
+            | (0,b,0) when b <> 0 -> (x,(y-accB2))::(creationListeE liste accF (accB-1) (accB2+1) accC)
+            | (_,_,1) -> (x,(y+accF))::(creationListeE liste (accF-1) accB accB2 accC)
+            | (0,0,0) -> []
+        let listeC =
+            match direction with
+            | North -> creationListeN [] nbrFront nbrBack 1 1
+            | South -> creationListeS [] nbrFront nbrBack 1 1
+            | West -> creationListeW [] nbrFront nbrBack 1 1
+            | East -> creationListeE [] nbrFront nbrBack 1 1
+        { Coords = listeC; Center = (x, y); Facing = direction; Name = ship.Name }
 
     let canMoveForward (ship: Ship) (grid: Sector Grid) : bool =
         (* ------- À COMPLÉTER ------- *)
