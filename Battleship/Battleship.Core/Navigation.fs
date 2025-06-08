@@ -164,11 +164,12 @@ module Navigation =
         | (West, Counterclockwise) -> South
 
     let canRotateForward (ship: Ship) (rotation: Rotation) (grid: Sector Grid) : bool =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
-        false
+        let direction = getNextDirection ship.Facing rotation
+        if canRotate ship direction grid then
+            canMoveForward (rotate ship direction) grid
+        else
+            false
 
     let rotateForward (ship: Ship) (rotation: Rotation) : Ship =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
-        { Coords = []; Center = (0, 0); Facing = North; Name = Spy }
+        let direction = getNextDirection ship.Facing rotation
+        moveForward (rotate ship direction)
