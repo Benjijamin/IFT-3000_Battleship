@@ -35,7 +35,6 @@ module Battlefield =
         | Some (Active (name,_)) -> Some name
 
     let extractData (grid: Sector Grid) : Data =
-        
         let shipsToExtract = Spy::PatrolBoat::Destroyer::Submarine::Cruiser::AircraftCarrier::[]
 
         //Retourne les secteurs actifs avec leurs coords
@@ -121,6 +120,9 @@ module Battlefield =
         { Dims = getGridDims grid; Ships = createShips grid }
 
     let loadData (data: Data) : Sector Grid =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
-        Empty
+        let grid = initClearGrid data.Dims
+        let rec addShips s g =
+            match s with
+            | [] -> g
+            | ship::t -> addShips t (addShip ship g)
+        addShips data.Ships grid
