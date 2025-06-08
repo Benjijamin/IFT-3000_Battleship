@@ -55,17 +55,38 @@ module Navigation =
 
     let canMove (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
         
+        // Calculer la nouvelle position
+        let center = ship.Center
+        let newCenter =
+            match direction with
+            | North -> (fst center - 1, snd center)
+            | South -> (fst center + 1, snd center)
+            | East -> (fst center, snd center + 1)
+            | West -> (fst center, snd center - 1)
+        
+        // Apeller canPlace avec la nouvelle position : center, direction, name, grid
+        canPlace newCenter direction ship.Name grid
 
-
-
-        false
+        // TODO: a supprimer quand tout est bon
+        // false 
 
     let move (ship: Ship) (direction: Direction) : Ship =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
-        { Coords = []; Center = (0, 0); Facing = North; Name = Spy }
+        //calculer la nouvelle position
+        let center = ship.Center
+        let newCenter =
+            match direction with
+            | North -> (fst center - 1, snd center)
+            | South -> (fst center + 1, snd center)
+            | East -> (fst center, snd center + 1)
+            | West -> (fst center, snd center - 1)
+
+        //Créer le nouveau bateau avec la nouvelle position
+        createShip newCenter ship.Facing ship.Name
+
+        // TODO: a supprimer quand tout est bon
+        //{ Coords = []; Center = (0, 0); Facing = North; Name = Spy } 
     
-    //Pour fonctions rotate et moveforward : mettre à jour la grille?
+    //Pour fonctions rotate et moveforward : mettre à jour la grille? 
     //Pour rotate et moveforward, comment vérifier si possible et MAJ si pas accès à la grille?
     //À optimiser, mêmes bouts de code pour canrotate/rotate et canmoveforward/moveforward
     let canRotate (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
