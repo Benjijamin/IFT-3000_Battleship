@@ -43,7 +43,7 @@ module Ship =
         let rec creationE (a,b) (accP, kP) =
             match accP with
             | 0 -> []
-            | _ -> (a,b-kP)::(creationE (a,b) (accP-1,kP-1))
+            | _ -> (a,b+kP)::(creationE (a,b) (accP-1,kP-1))
         let rec creationN (a,b) (accP, kP) =
             match accP with
             | 0 -> []
@@ -51,7 +51,7 @@ module Ship =
         let rec creationW (a,b) (accP, kP) =
             match accP with
             | 0 -> []
-            | _ -> (a,b+kP)::(creationW (a,b) (accP-1,kP-1))
+            | _ -> (a,b-kP)::(creationW (a,b) (accP-1,kP-1))
         let rec creationS (a,b) (accP, kP) =
             match accP with
             | 0 -> []
