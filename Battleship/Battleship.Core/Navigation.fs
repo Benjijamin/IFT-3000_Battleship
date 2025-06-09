@@ -186,10 +186,7 @@ module Navigation =
 
     let canRotateForward (ship: Ship) (rotation: Rotation) (grid: Sector Grid) : bool =
         let direction = getNextDirection ship.Facing rotation
-        if canRotate ship direction grid then
-            canMoveForward (rotate ship direction) grid
-        else
-            false
+        canMoveForward (rotate ship direction) grid
 
     let rotateForward (ship: Ship) (rotation: Rotation) : Ship =
         let direction = getNextDirection ship.Facing rotation
