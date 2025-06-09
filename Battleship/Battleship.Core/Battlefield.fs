@@ -14,19 +14,60 @@ module Battlefield =
     (* --- Nouvelles fonctions --- *)
 
     let initClearGrid (dims: Dims) : Sector Grid =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
-        Empty
+        //serparer les dimensions en hauteur et largeur
+        let (hauteur, largeur) = dims
+        // creer une ligne vide avec la largeur
+        let ligneVide = List.init largeur (fun _ -> Clear)
+        // creer une grille vide avec la hauteur
+        let rec construireGrille h =
+            if h <= 0 then Empty
+            else Row (ligneVide, construireGrille (h - 1))
+        construireGrille hauteur
+
+        //Empty
+        
 
     let addShip (ship: Ship) (grid: Sector Grid) : Sector Grid =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
-        Empty
+        // Ajouter l'index de chaque position du bateau (0 au debut et n-1 la fin)
+        let coordIndexMap =
+            ship.Coords
+            |> List.mapi (fun i coord -> (coord, i))
+            |> Map.ofList
+        
+        // Mettre Active et le nom du bateau dans les coordonnées du bateau
+        // Appel recursif pour mettre à jour la grille ligne par ligne
+        let rec updateGrid hauteur grid =
+            match grid with
+            | Empty -> Empty
+            | Row (ligne, reste) ->
+                // pour chaque ligne, recherche les coordonnées du bateau et met a jour
+                let newLigne = List.mapi (fun largeur sector ->
+                    match Map.tryFind (hauteur, largeur) coordIndexMap with
+                    | Some i -> Active (ship.Name, i)
+                    | None -> sector ) ligne
+                Row (newLigne, updateGrid (hauteur + 1) reste)
+
+        // Commencer a la ligne 0 et mettre à jour la grille
+        updateGrid 0 grid
+
+        //Empty
 
     let replaceShip (ship: Ship) (grid: Sector Grid) : Sector Grid =
-        (* ------- À COMPLÉTER ------- *)
-        (* ----- Implémentation ------ *)
-        Empty
+        // Supprimer le bateau de la grille (bateau unique)
+        let rec removeShip hauteur grid =
+            match grid with
+            | Empty -> Empty
+            | Row (ligne, reste) ->
+                let newLigne = List.map (fun sector ->
+                    match sector with
+                    | Active (name, _) when name = ship.Name -> Clear
+                    | _ -> sector) ligne
+                Row (newLigne, removeShip (hauteur + 1) reste)
+
+        // Ajouter le bateau à la grille avec les nouvelles coordonnées
+        addShip ship grid
+        
+        //Empty
 
     let getSelectedName (coord: Coord) (grid: Sector Grid) : Name option =
         match elementAt grid (fst coord) (snd coord) with
