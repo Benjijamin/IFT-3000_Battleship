@@ -60,7 +60,6 @@ module Ship =
         
         {Coords = listeC; Center = center; Facing = facing; Name = name}
 
-    //Sortir fonction pour filtrer liste de coord?
     let getPerimeter (ship: Ship) (dims: Dims) : Coord list =
         let coord_list = ship.Coords
         let ((x,y), sens) =

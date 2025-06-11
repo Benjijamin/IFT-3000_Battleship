@@ -67,8 +67,6 @@ module Navigation =
     let rotate (ship: Ship) (direction: Direction) : Ship =
         createShip ship.Center direction ship.Name
 
-    // Faire une fonction pour trouver nouveau centre (utilisé aussi pour move et moveforward)
-    //Match with direction mouvement, puis match facing
     let canMoveForward (ship: Ship) (grid: Sector Grid) : bool =
         let (xa, ya) = ship.Center
         let (xb,yb) = getcenter (xa, ya) ship.Facing
