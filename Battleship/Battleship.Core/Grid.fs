@@ -23,10 +23,6 @@ module Grid =
             | Row(l, n) -> loopColumn n (x-1)
         loopColumn g x
 
-    let aInterieur (dim_grid: Dims) (x, y): bool = 
-          let (hauteur, largeur) = dim_grid
-          x >= 0 && y >= 0 && x < hauteur && y < largeur
-
     let rec getGridDims (grid: 'a Grid) : Dims =
         match grid with
         | Empty -> (0, 0)

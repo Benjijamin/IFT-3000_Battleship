@@ -27,6 +27,10 @@ module Ship =
         | Submarine -> (3,1) 
         | Cruiser -> (4,1) 
         | AircraftCarrier -> (5,2)
+     
+    let aInterieur (dim_grid: Dims) (x, y): bool = 
+        let (hauteur, largeur) = dim_grid
+        x >= 0 && y >= 0 && x < hauteur && y < largeur
         
     let createShip (center: Coord) (facing: Direction) (name: Name) : Ship =
         let (acc,k) = getDimKShip name

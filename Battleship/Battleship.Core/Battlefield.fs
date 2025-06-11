@@ -7,49 +7,34 @@ module Battlefield =
 
     type Data = { Dims: Dims; Ships: Ship list }
     
-    //pour grouper les morceaux d'un ship
     type ShipPieces = (Name * (Coord * int) list)
 
-    // Initialiser une grille vide avec des Clear
     let initClearGrid (dims: Dims) : Sector Grid =
-        //serparer les dimensions en hauteur et largeur
         let (hauteur, largeur) = dims
-        // creer une ligne vide avec la largeur
         let ligneVide = List.init largeur (fun _ -> Clear)
-        // creer une grille vide avec la hauteur
         let rec construireGrille h =
             if h <= 0 then Empty
             else Row (ligneVide, construireGrille (h - 1))
         construireGrille hauteur
         
-    // Ajouter un bateau à la grille
     let addShip (ship: Ship) (grid: Sector Grid) : Sector Grid =
-        // Ajouter l'index de chaque position du bateau (0 au debut et n-1 la fin)
         let coordIndexMap =
             ship.Coords
             |> List.mapi (fun i coord -> (coord, i))
             |> Map.ofList
         
-        // Mettre Active et le nom du bateau dans les coordonnées du bateau
-        // Appel recursif pour mettre à jour la grille ligne par ligne
         let rec updateGrid hauteur grid =
             match grid with
             | Empty -> Empty
             | Row (ligne, reste) ->
-                // pour chaque ligne, recherche les coordonnées du bateau et met a jour
                 let newLigne = List.mapi (fun largeur sector ->
                     match Map.tryFind (hauteur, largeur) coordIndexMap with
                     | Some i -> Active (ship.Name, i)
                     | None -> sector ) ligne
                 Row (newLigne, updateGrid (hauteur + 1) reste)
-
-        // Commencer a la ligne 0 et mettre à jour la grille
         updateGrid 0 grid
 
-
-    // Remplacer un bateau dans la grille
     let replaceShip (ship: Ship) (grid: Sector Grid) : Sector Grid =
-        // Supprimer le bateau de la grille (bateau unique)
         let rec removeShip grid =
             match grid with
             | Empty -> Empty
@@ -59,8 +44,6 @@ module Battlefield =
                     | Active (name, _) when name = ship.Name -> Clear
                     | _ -> sector) ligne
                 Row (newLigne, removeShip reste)
-
-        // Ajouter le bateau à la grille avec les nouvelles coordonnées
         let cleanedGrid = removeShip grid
         addShip ship cleanedGrid
         
@@ -74,7 +57,6 @@ module Battlefield =
     let extractData (grid: Sector Grid) : Data =
         let shipsToExtract = Spy::PatrolBoat::Destroyer::Submarine::Cruiser::AircraftCarrier::[]
 
-        //Retourne les secteurs actifs avec leurs coords
         let getActiveSectors (grid : Sector Grid) : (Coord * Sector) list = 
             let rec loopX r l x y = 
                 match r with
@@ -89,7 +71,6 @@ module Battlefield =
 
             loopY grid [] 0
 
-        //Regroupe les morceaux de chaque type de ship
         let groupShips (sectors : (Coord * Sector) list) : ShipPieces list =
             let groupByName (sectors : (Coord * Sector) list) (name : Name) : ShipPieces =
                 let group = (name, [])  
@@ -106,7 +87,6 @@ module Battlefield =
                 | name::t -> loop t (l@[(groupByName sectors name)])
             loop shipsToExtract []
         
-        //Trouver direction du ship
         let directionFromPieces (pieces : ShipPieces) : Direction = 
             let rec findPiece p id =
                 match p with
@@ -124,7 +104,6 @@ module Battlefield =
             | (1, 0) -> South
             | _ -> South
 
-        //Trouver centre du ship
         let findShipCenter (pieces : ShipPieces) : Coord = 
             let centerId = snd (getDimKShip (fst pieces))
     
@@ -136,7 +115,6 @@ module Battlefield =
 
             loop (snd pieces) centerId
 
-        //On parcours la grille et recreate les bateaux qui ont des morceaux
         let createShips (grid : Sector Grid) : Ship list = 
             let shipPieces = groupShips (getActiveSectors (grid))
             let rec loop sp l = 

@@ -17,7 +17,6 @@ module Navigation =
         | North -> 180
         | East -> 270
 
-    //À mettre dans canPlace si pas utilisée ailleurs
     let rec verifListeCoordDispo (listeCoord: Coord list) (grille: Sector Grid) (boat: Ship) : bool =
             let nomShip = boat.Name
             match listeCoord with
@@ -25,45 +24,25 @@ module Navigation =
             | (b,c)::reste -> (match (elementAt grille b c) with
                                | Some (Active (nom, _)) when (nom= nomShip) -> verifListeCoordDispo reste grille boat
                                | Some Clear -> verifListeCoordDispo reste grille boat
-                               | None -> verifListeCoordDispo reste grille boat //ignore les coord en dehors de la grille 
+                               | None -> verifListeCoordDispo reste grille boat 
                                | _ -> false)
     
-    // Aucune coordonnees ne peut partager une cellule avec le parametre d'un autre bateau
     let canPlaceSansPerimeter (center: Coord) (direction: Direction) (name: Name) (grid: Sector Grid) : bool =
-        // Creer le bateau
         let theShip = createShip center direction name 
-        let (hauteur, largeur) = getGridDims grid
-        
-        // Verifier si le bateau est dans la grille
-        let aInterieur (x, y) = 
-            x >= 0 && y >= 0 && x < hauteur && y < largeur
-        let shipDansGrille = List.forall aInterieur theShip.Coords
-
-        // Aucune coordonnees ne peut partager une cellule avec un autre bateau + verifier si coordonnees dans la grille
+        let dims = getGridDims grid  
+        let shipDansGrille = List.forall (aInterieur dims) theShip.Coords
         let theShipDispo = verifListeCoordDispo theShip.Coords grid theShip 
-
-        // Retourner vrai si tout est OK
         theShipDispo && shipDansGrille
     
     let canPlace (center: Coord) (direction: Direction) (name: Name) (grid: Sector Grid) : bool =
-        
-        // Creer le bateau
         let theShip = createShip center direction name 
         let (hauteur, largeur) = getGridDims grid
-        
         let theShipDispo = canPlaceSansPerimeter center direction name grid
-       
-        //Verifier le paramètre
         let theShipParamater = getPerimeter theShip (hauteur, largeur)
         let perimeterDispo = verifListeCoordDispo theShipParamater grid theShip 
-        
-        // Retourner vrai si tout est OK
         theShipDispo && perimeterDispo 
         
-
     let canMove (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
-        
-        // Calculer la nouvelle position
         let (x,y) = ship.Center
         let newCenter =
             match direction with
@@ -71,13 +50,9 @@ module Navigation =
             | South -> (x + 1, y)
             | East -> (x, y + 1)
             | West -> (x, y - 1)
-        
-        // Apeller canPlace avec la nouvelle position : center, direction, name, grid
         canPlace newCenter ship.Facing ship.Name grid 
         
-
     let move (ship: Ship) (direction: Direction) : Ship =
-        //calculer la nouvelle position
         let (x,y) = ship.Center
         let newCenter =
             match direction with
@@ -85,12 +60,8 @@ module Navigation =
             | South -> (x + 1, y)
             | East -> (x, y + 1)
             | West -> (x, y - 1)
-
-        //Créer le nouveau bateau avec la nouvelle position
-
         createShip newCenter ship.Facing ship.Name
 
-    
     let canRotate (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
         let boat = createShip ship.Center direction ship.Name
         canPlace boat.Center boat.Facing boat.Name grid 
