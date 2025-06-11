@@ -50,7 +50,7 @@ module Battlefield =
     // Remplacer un bateau dans la grille
     let replaceShip (ship: Ship) (grid: Sector Grid) : Sector Grid =
         // Supprimer le bateau de la grille (bateau unique)
-        let rec removeShip hauteur grid =
+        let rec removeShip grid =
             match grid with
             | Empty -> Empty
             | Row (ligne, reste) ->
@@ -58,10 +58,11 @@ module Battlefield =
                     match sector with
                     | Active (name, _) when name = ship.Name -> Clear
                     | _ -> sector) ligne
-                Row (newLigne, removeShip (hauteur + 1) reste)
+                Row (newLigne, removeShip reste)
 
         // Ajouter le bateau à la grille avec les nouvelles coordonnées
-        addShip ship grid
+        let cleanedGrid = removeShip grid
+        addShip ship cleanedGrid
         
 
     let getSelectedName (coord: Coord) (grid: Sector Grid) : Name option =
