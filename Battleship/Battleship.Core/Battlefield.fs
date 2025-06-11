@@ -10,22 +10,17 @@ module Battlefield =
     //pour grouper les morceaux d'un ship
     type ShipPieces = (Name * (Coord * int) list)
 
-    (* ------- À COMPLÉTER ------- *)
-    (* --- Nouvelles fonctions --- *)
-
     // Initialiser une grille vide avec des Clear
     let initClearGrid (dims: Dims) : Sector Grid =
         //serparer les dimensions en hauteur et largeur
-        let (hauteur, largeur) = dims
+        let (largeur, hauteur) = dims
         // creer une ligne vide avec la largeur
         let ligneVide = List.init largeur (fun _ -> Clear)
         // creer une grille vide avec la hauteur
-        let rec construireGrille h : Sector Grid =
+        let rec construireGrille h =
             if h <= 0 then Empty
             else Row (ligneVide, construireGrille (h - 1))
         construireGrille hauteur
-
-        //Empty
         
     // Ajouter un bateau à la grille
     let addShip (ship: Ship) (grid: Sector Grid) : Sector Grid =
@@ -51,7 +46,6 @@ module Battlefield =
         // Commencer a la ligne 0 et mettre à jour la grille
         updateGrid 0 grid
 
-        //Empty
 
     // Remplacer un bateau dans la grille
     let replaceShip (ship: Ship) (grid: Sector Grid) : Sector Grid =
@@ -69,7 +63,6 @@ module Battlefield =
         // Ajouter le bateau à la grille avec les nouvelles coordonnées
         addShip ship grid
         
-        //Empty
 
     let getSelectedName (coord: Coord) (grid: Sector Grid) : Name option =
         match elementAt grid (fst coord) (snd coord) with
