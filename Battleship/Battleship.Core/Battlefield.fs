@@ -13,6 +13,7 @@ module Battlefield =
     (* ------- À COMPLÉTER ------- *)
     (* --- Nouvelles fonctions --- *)
 
+    // Initialiser une grille vide avec des Clear
     let initClearGrid (dims: Dims) : Sector Grid =
         //serparer les dimensions en hauteur et largeur
         let (hauteur, largeur) = dims
@@ -26,7 +27,7 @@ module Battlefield =
 
         //Empty
         
-
+    // Ajouter un bateau à la grille
     let addShip (ship: Ship) (grid: Sector Grid) : Sector Grid =
         // Ajouter l'index de chaque position du bateau (0 au debut et n-1 la fin)
         let coordIndexMap =
@@ -52,6 +53,7 @@ module Battlefield =
 
         //Empty
 
+    // Remplacer un bateau dans la grille
     let replaceShip (ship: Ship) (grid: Sector Grid) : Sector Grid =
         // Supprimer le bateau de la grille (bateau unique)
         let rec removeShip hauteur grid =

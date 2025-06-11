@@ -38,20 +38,20 @@ module Navigation =
     
     let canPlace (center: Coord) (direction: Direction) (name: Name) (grid: Sector Grid) : bool =
         
-        // // Creer le bateau
-        // let theShip = createShip center direction name 
-        // let (theDim_hauteur, theDim_largeur) = getGridDim grid
-        //
-        // // Aucune coordonnees ne peut partager une cellule avec un autre bateau + verifier si coordonnees dans la grille
-        // let theShipDispo = verifListeCoordDispo theShip.Coords grid theShip //bool
-        //
-        // // Aucune coordonnees ne peut partager une cellule avec le parametre d'un autre bateau
-        // let theShipParamater = getPerimeter theShip (theDim_hauteur, theDim_largeur) //Parametre
-        // let perimeterDispo = verifListeCoordDispo theShipParamater grid theShip //bool
-        //
-        //  // Retourner vrai si tout est OK
-        // dansDim && theShipDispo && perimeterDispo
-        true
+        // Creer le bateau
+        let theShip = createShip center direction name 
+        let (theDim_hauteur, theDim_largeur) = getGridDim grid
+        
+        // Aucune coordonnees ne peut partager une cellule avec un autre bateau + verifier si coordonnees dans la grille
+        let theShipDispo = verifListeCoordDispo theShip.Coords grid theShip //bool
+        
+        // Aucune coordonnees ne peut partager une cellule avec le parametre d'un autre bateau
+        let theShipParamater = getPerimeter theShip (theDim_hauteur, theDim_largeur) //Parametre
+        let perimeterDispo = verifListeCoordDispo theShipParamater grid theShip //bool
+        
+        // Retourner vrai si tout est OK
+        theShipDispo && perimeterDispo
+        
 
     let canMove (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
         
