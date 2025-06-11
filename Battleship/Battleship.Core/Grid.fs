@@ -44,7 +44,7 @@ module Grid =
 
         let rec loopY g x y =
             match g with
-            | Empty -> (x, y)
+            | Empty -> (y, x)
             | Row(l, Empty) -> (loopX l 0, y+1)
             | Row(l, n) -> loopY n (x) (y+1)
         loopY grid (0) (0)

@@ -154,7 +154,7 @@ module Battlefield =
                 | (n, p)::t -> loop t (l@[createShip (findShipCenter (n,p)) (directionFromPieces (n, p)) n]) 
             loop shipPieces []
 
-        { Dims = getGridDims grid; Ships = createShips grid }
+        { Dims = Grid.getGridDims grid; Ships = createShips grid }
 
     let loadData (data: Data) : Sector Grid =
         let grid = initClearGrid data.Dims
