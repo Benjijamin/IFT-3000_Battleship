@@ -17,6 +17,14 @@ module Navigation =
         | North -> 180
         | East -> 270
 
+    let getcenter (center: Coord) (facing: Direction) : Coord =
+        match facing with
+        | North -> (fst center - 1, snd center)
+        | South -> (fst center + 1, snd center)
+        | East -> (fst center, snd center + 1)
+        | West -> (fst center, snd center - 1)
+    
+
     let rec verifListeCoordDispo (listeCoord: Coord list) (grille: Sector Grid) (boat: Ship) : bool =
             let nomShip = boat.Name
             match listeCoord with
@@ -44,22 +52,12 @@ module Navigation =
         
     let canMove (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
         let (x,y) = ship.Center
-        let newCenter =
-            match direction with
-            | North -> (x - 1, y)
-            | South -> (x + 1, y)
-            | East -> (x, y + 1)
-            | West -> (x, y - 1)
+        let newCenter = getcenter (x, y) direction
         canPlace newCenter ship.Facing ship.Name grid 
         
     let move (ship: Ship) (direction: Direction) : Ship =
         let (x,y) = ship.Center
-        let newCenter =
-            match direction with
-            | North -> (x - 1, y)
-            | South -> (x + 1, y)
-            | East -> (x, y + 1)
-            | West -> (x, y - 1)
+        let newCenter = getcenter (x, y) direction
         createShip newCenter ship.Facing ship.Name
 
     let canRotate (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
@@ -73,23 +71,13 @@ module Navigation =
     //Match with direction mouvement, puis match facing
     let canMoveForward (ship: Ship) (grid: Sector Grid) : bool =
         let (xa, ya) = ship.Center
-        let (xb,yb) =
-            match ship.Facing with
-            | North -> (xa-1, ya)
-            | South -> (xa+1, ya)
-            | East -> (xa, ya+1)
-            | West -> (xa, ya-1)
+        let (xb,yb) = getcenter (xa, ya) ship.Facing
         let boat = createShip (xb,yb) ship.Facing ship.Name
         canPlaceSansPerimeter boat.Center boat.Facing boat.Name grid
 
     let moveForward (ship: Ship) : Ship =
         let (xa, ya) = ship.Center
-        let newCentre =
-            match ship.Facing with
-            | North -> (xa-1,ya)
-            | South -> (xa+1,ya)
-            | West -> (xa,ya-1)
-            | East -> (xa,ya+1)
+        let newCentre = getcenter (xa, ya) ship.Facing
         createShip newCentre ship.Facing ship.Name
         
     let getNextDirection (current: Direction) (rotation: Rotation) : Direction =
