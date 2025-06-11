@@ -36,15 +36,24 @@ module Grid =
          | true -> (x >= 0) && (y >= 0)
          | false -> false
 
-    let getGridDims (grid: 'a Grid) : Dims =
-        let rec loopX l x =
-            match l with
-            | [] -> x
-            | h::t -> loopX t (x+1)
+    //let getGridDims (grid: 'a Grid) : Dims =
+    //    let rec loopX l x =
+    //        match l with
+    //        | [] -> x
+    //        | h::t -> loopX t (x+1)
+    //
+    //    let rec loopY g x y =
+    //        match g with
+    //        | Empty -> (x, y)
+    //        | Row(l, Empty) -> (loopX l 0, y+1)
+    //        | Row(l, n) -> loopY n (x) (y+1)
+    //    loopY grid (0) (0)
 
-        let rec loopY g x y =
-            match g with
-            | Empty -> (x, y)
-            | Row(l, Empty) -> (loopX l 0, y+1)
-            | Row(l, n) -> loopY n (x) (y+1)
-        loopY grid (0) (0)
+    let rec getGridDims (grid: 'a Grid) : Dims =
+        match grid with
+        | Empty -> (0, 0)
+        | Row(ligne, reste) ->
+            let (hauteur_reste,_) = getGridDims reste
+            let hauteur = 1 + hauteur_reste
+            let largeur = List.length ligne
+            (hauteur, largeur)
