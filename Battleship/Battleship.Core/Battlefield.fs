@@ -127,14 +127,7 @@ module Battlefield =
 
         //Trouver centre du ship
         let findShipCenter (pieces : ShipPieces) : Coord = 
-            let centerId =
-                match pieces with
-                | (Spy, _) -> 0
-                | (PatrolBoat, _) -> 0
-                | (Destroyer, _) -> 1
-                | (Submarine, _) -> 1
-                | (Cruiser, _) -> 1
-                | (AircraftCarrier, _) -> 2
+            let centerId = snd (getDimKShip (fst pieces))
     
             let rec loop p id =
                 match p with
