@@ -88,19 +88,18 @@ module Battlefield =
                 | Row(r, n) -> loopY n (l@(loopX r [] 0 y)) (y+1)
 
             loopY grid [] 0
-        
-        //Groupe les secteurs actifs par nom de ship
-        let groupByName (sectors : (Coord * Sector) list) (name : Name) : ShipPieces =
-            let group = (name, [])  
-            let rec loop s g =
-                match s with
-                | [] -> g
-                | (c, Active(n, i))::t when n = name -> loop t (n, (snd g)@[(c, i)])
-                | h::t -> loop t g
-            loop sectors group
 
         //Regroupe les morceaux de chaque type de ship
         let groupShips (sectors : (Coord * Sector) list) : ShipPieces list =
+            let groupByName (sectors : (Coord * Sector) list) (name : Name) : ShipPieces =
+                let group = (name, [])  
+                let rec loop s g =
+                    match s with
+                    | [] -> g
+                    | (c, Active(n, i))::t when n = name -> loop t (n, (snd g)@[(c, i)])
+                    | h::t -> loop t g
+                loop sectors group
+
             let rec loop stg l =
                 match stg with
                 | [] -> l
