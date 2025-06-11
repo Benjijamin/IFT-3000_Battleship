@@ -20,7 +20,7 @@ module Battlefield =
         // creer une ligne vide avec la largeur
         let ligneVide = List.init largeur (fun _ -> Clear)
         // creer une grille vide avec la hauteur
-        let rec construireGrille h =
+        let rec construireGrille h : Sector Grid =
             if h <= 0 then Empty
             else Row (ligneVide, construireGrille (h - 1))
         construireGrille hauteur

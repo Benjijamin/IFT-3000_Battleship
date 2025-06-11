@@ -36,21 +36,28 @@ module Navigation =
                                | Some Clear -> verifListeCoordDispo reste grille boat
                                | _ -> false)
     
+    // Aucune coordonnees ne peut partager une cellule avec le parametre d'un autre bateau
+    let canPlacePerimeter (center: Coord) (direction: Direction) (name: Name) (grid: Sector Grid) : bool =
+        let theShip = createShip center direction name 
+        let (theDim_hauteur, theDim_largeur) = getGridDim grid
+        let theShipParameter = getPerimeter theShip (theDim_hauteur, theDim_largeur)
+        verifListeCoordDispo theShipParameter grid theShip
+    
     let canPlace (center: Coord) (direction: Direction) (name: Name) (grid: Sector Grid) : bool =
         
         // Creer le bateau
         let theShip = createShip center direction name 
-        let (theDim_hauteur, theDim_largeur) = getGridDim grid
+        //let (theDim_hauteur, theDim_largeur) = getGridDim grid
         
         // Aucune coordonnees ne peut partager une cellule avec un autre bateau + verifier si coordonnees dans la grille
         let theShipDispo = verifListeCoordDispo theShip.Coords grid theShip //bool
         
-        // Aucune coordonnees ne peut partager une cellule avec le parametre d'un autre bateau
-        let theShipParamater = getPerimeter theShip (theDim_hauteur, theDim_largeur) //Parametre
-        let perimeterDispo = verifListeCoordDispo theShipParamater grid theShip //bool
+        
+        //let theShipParamater = getPerimeter theShip (theDim_hauteur, theDim_largeur) //Parametre
+        //let perimeterDispo = verifListeCoordDispo theShipParamater grid theShip //bool
         
         // Retourner vrai si tout est OK
-        theShipDispo && perimeterDispo
+        theShipDispo // && perimeterDispo
         
 
     let canMove (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
@@ -65,8 +72,8 @@ module Navigation =
             | West -> (fst center, snd center - 1)
         
         // Apeller canPlace avec la nouvelle position : center, direction, name, grid
-        canPlace newCenter direction ship.Name grid
-
+        canPlace newCenter direction ship.Name grid && canPlacePerimeter newCenter direction ship.Name grid
+        
         // TODO: a supprimer quand tout est bon
         // false 
 
@@ -88,7 +95,7 @@ module Navigation =
     
     let canRotate (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
         let boat = createShip ship.Center direction ship.Name
-        canPlace boat.Center boat.Facing boat.Name grid
+        canPlace boat.Center boat.Facing boat.Name grid && canPlacePerimeter boat.Center boat.Facing boat.Name grid
 
     let rotate (ship: Ship) (direction: Direction) : Ship =
         // let (dim, k) = getDimKShip ship.Name
