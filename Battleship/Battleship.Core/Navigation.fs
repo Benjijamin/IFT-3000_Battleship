@@ -16,17 +16,6 @@ module Navigation =
         | West -> 90
         | North -> 180
         | East -> 270
-    
-    //let rec getGridDims (grid: Sector Grid) : Dims =
-    //    match grid with
-    //   | Empty -> (0, 0)
-    //    | Row(line, reste) ->
-    //        let (_, hauteur_reste) = getGridDims reste
-    //        let hauteur = 1 + hauteur_reste
-    //        let largeur = List.length line
-    //        (hauteur, largeur)
-
-    
 
     //À mettre dans canPlace si pas utilisée ailleurs
     let rec verifListeCoordDispo (listeCoord: Coord list) (grille: Sector Grid) (boat: Ship) : bool =
@@ -46,11 +35,9 @@ module Navigation =
         let (hauteur, largeur) = getGridDims grid
         
         // Verifier si le bateau est dans la grille
-
         let aInterieur (x, y) = 
             x >= 0 && y >= 0 && x < hauteur && y < largeur
-        let shipDansGrille =
-            List.forall aInterieur theShip.Coords
+        let shipDansGrille = List.forall aInterieur theShip.Coords
 
         // Aucune coordonnees ne peut partager une cellule avec un autre bateau + verifier si coordonnees dans la grille
         let theShipDispo = verifListeCoordDispo theShip.Coords grid theShip 
