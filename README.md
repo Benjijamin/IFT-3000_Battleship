@@ -1,7 +1,7 @@
-Version .NET :
+Version .NET : .NET 9.0
 
-OS :
+OS : Windows 11
 
-IDE :
+IDE : Visual Studio 2022
 
 Commentaires (facultatif) :
