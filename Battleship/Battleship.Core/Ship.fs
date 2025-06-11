@@ -59,21 +59,12 @@ module Ship =
     //Sortir fonction pour filtrer liste de coord?
     let getPerimeter (ship: Ship) (dims: Dims) : Coord list =
         let coord_list = ship.Coords
-        let getCoordFirst listeF =
-            match listeF with
-            | [] -> failwith "La liste est vide"
-            | (a,b)::reste -> (a,b)
-        let rec getCoordLast listeL =
-            match listeL with
-            | [] -> failwith "La liste est vide"
-            | [(a,b)] -> (a,b)
-            | (a,b)::reste -> getCoordLast reste
         let ((x,y), sens) =
             match ship.Facing with
-            | North -> (getCoordFirst coord_list, North)
-            | South -> (getCoordLast coord_list, South)
-            | East -> (getCoordFirst coord_list, East)
-            | West -> (getCoordLast coord_list, West)
+            | North -> (List.head coord_list, North)
+            | South -> (List.last coord_list, South)
+            | East -> (List.head coord_list, East)
+            | West -> (List.last coord_list, West)
         let (dimShip,_) = getDimKShip ship.Name
         let liste_repV = [(x-1,y); (x+dimShip,y)]
         let liste_repH = [(x,y+1); (x,y-dimShip)]
@@ -94,10 +85,10 @@ module Ship =
         let rec filtrage listeNF listeCRep =
             match listeNF with
             | [] -> listeCRep
-            | (a,b)::reste when (verifInGrid dims (a,b)) ->
+            | (a,b)::reste when (aInterieur dims (a,b)) ->
                 begin
                     let listeCRep = (a,b)::listeCRep
                     filtrage reste listeCRep
                 end
-            | (a,b)::reste -> filtrage reste listeCRep
+            | (_,_)::reste -> filtrage reste listeCRep
         filtrage listeA []
