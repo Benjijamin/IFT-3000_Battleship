@@ -86,9 +86,6 @@ module Navigation =
         // TODO: a supprimer quand tout est bon
         //{ Coords = []; Center = (0, 0); Facing = North; Name = Spy } 
     
-    //Pour fonctions rotate et moveforward : mettre à jour la grille? 
-    //Pour rotate et moveforward, comment vérifier si possible et MAJ si pas accès à la grille?
-    //À optimiser, mêmes bouts de code pour canrotate/rotate et canmoveforward/moveforward
     let canRotate (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
         let boat = createShip ship.Center direction ship.Name
         canPlace boat.Center boat.Facing boat.Name grid
@@ -131,6 +128,8 @@ module Navigation =
         //     | East -> creationListeE [] nbrFront nbrBack 1 1
         // { Coords = listeC; Center = (x, y); Facing = direction; Name = ship.Name }
 
+    // Faire une fonction pour trouver nouveau centre (utilisé aussi pour move et moveforward)
+    //Match with direction mouvement, puis match facing
     let canMoveForward (ship: Ship) (grid: Sector Grid) : bool =
         let (xa, ya) = ship.Center
         let (xb,yb) =
@@ -142,6 +141,7 @@ module Navigation =
         let boat = createShip (xb,yb) ship.Facing ship.Name
         canPlace boat.Center boat.Facing boat.Name grid
 
+    //Utilité vs move??
     let moveForward (ship: Ship) : Ship =
         let (xa, ya) = ship.Center
         let newCentre =
