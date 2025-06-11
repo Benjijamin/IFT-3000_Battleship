@@ -19,15 +19,6 @@ module Ship =
 
     type Ship = {Coords: Coord list; Center: Coord; Facing: Direction; Name: Name}
     
-    let getDimShip (ship: Ship) : int =
-        match ship.Name with
-            | Spy -> 2 
-            | PatrolBoat -> 2
-            | Destroyer -> 3 
-            | Submarine -> 3
-            | Cruiser -> 4
-            | AircraftCarrier -> 5
-    
     let getDimKShip (name: Name) : int*int =
         match name with
         | Spy -> (2,0) 
@@ -37,7 +28,6 @@ module Ship =
         | Cruiser -> (4,1) 
         | AircraftCarrier -> (5,2)
         
-    //Ajouter getDimShip dedans pour réduire?
     let createShip (center: Coord) (facing: Direction) (name: Name) : Ship =
         let (acc,k) = getDimKShip name
         let rec creationE (a,b) (accP, kP) =
@@ -84,7 +74,7 @@ module Ship =
             | South -> (getCoordLast coord_list, South)
             | East -> (getCoordFirst coord_list, East)
             | West -> (getCoordLast coord_list, West)
-        let dimShip = getDimShip ship
+        let (dimShip,_) = getDimKShip ship.Name
         let liste_repV = [(x-1,y); (x+dimShip,y)]
         let liste_repH = [(x,y+1); (x,y-dimShip)]
         let rec prepListeV liste_rep acc dim =
