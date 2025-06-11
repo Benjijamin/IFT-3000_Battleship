@@ -79,7 +79,7 @@ module Battlefield =
             let rec loopX r l x y = 
                 match r with
                 | [] -> l
-                | Active(name, i)::t -> loopX t (l@[((x, y), Active(name, i))]) (x+1) y
+                | Active(name, i)::t -> loopX t (l@[((y, x), Active(name, i))]) (x+1) y
                 | _::t -> loopX t l (x+1) y
 
             let rec loopY g l y =
@@ -119,10 +119,10 @@ module Battlefield =
             let second = findPiece (snd pieces) 1
 
             match ((fst head) - (fst second), (snd head) - (snd second)) with
-            | (-1,0) -> West
-            | (0,-1) -> North
-            | (1, 0) -> East
-            | (0, 1) -> South
+            | (0,-1) -> West
+            | (-1,0) -> North
+            | (0, 1) -> East
+            | (1, 0) -> South
             | _ -> South
 
         //Trouver centre du ship
