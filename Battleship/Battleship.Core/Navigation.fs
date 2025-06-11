@@ -64,21 +64,14 @@ module Navigation =
         let theShip = createShip center direction name 
         let (hauteur, largeur) = getGridDims grid
         
-        // Verifier si le bateau est dans la grille (VerifinGrid ne focntionne pas correctement)
-        let aInterieur (x, y) = 
-            x >= 0 && y >= 0 && x < hauteur && y < largeur
-        let shipDansGrille =
-            List.forall aInterieur theShip.Coords
-           
-        // Aucune coordonnees ne peut partager une cellule avec un autre bateau
-        let theShipDispo = verifListeCoordDispo theShip.Coords grid theShip
-        
+        let theShipDispo = canPlaceSansPerimeter center direction name grid
+       
         //Verifier le paramètre
         let theShipParamater = getPerimeter theShip (hauteur, largeur)
         let perimeterDispo = verifListeCoordDispo theShipParamater grid theShip 
         
         // Retourner vrai si tout est OK
-        theShipDispo && perimeterDispo && shipDansGrille
+        theShipDispo && perimeterDispo 
         
 
     let canMove (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
