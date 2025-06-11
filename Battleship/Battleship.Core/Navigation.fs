@@ -17,14 +17,14 @@ module Navigation =
         | North -> 180
         | East -> 270
     
-    let rec getGridDims (grid: Sector Grid) : Coord =
-        match grid with
-        | Empty -> (0, 0)
-        | Row(line, reste) ->
-            let (_, hauteur_reste) = getGridDims reste
-            let hauteur = 1 + hauteur_reste
-            let largeur = List.length line
-            (hauteur, largeur)
+    //let rec getGridDims (grid: Sector Grid) : Dims =
+    //    match grid with
+    //   | Empty -> (0, 0)
+    //    | Row(line, reste) ->
+    //        let (_, hauteur_reste) = getGridDims reste
+    //        let hauteur = 1 + hauteur_reste
+    //        let largeur = List.length line
+    //        (hauteur, largeur)
 
     
 
@@ -43,7 +43,7 @@ module Navigation =
     let canPlaceSansPerimeter (center: Coord) (direction: Direction) (name: Name) (grid: Sector Grid) : bool =
         // Creer le bateau
         let theShip = createShip center direction name 
-        let (largeur, hauteur) = getGridDims grid
+        let (hauteur, largeur) = getGridDims grid
         
         // Verifier si le bateau est dans la grille
 
@@ -62,10 +62,9 @@ module Navigation =
         
         // Creer le bateau
         let theShip = createShip center direction name 
-        let (largeur, hauteur) = getGridDims grid
+        let (hauteur, largeur) = getGridDims grid
         
-        // Verifier si le bateau est dans la grille
-
+        // Verifier si le bateau est dans la grille (VerifinGrid ne focntionne pas correctement)
         let aInterieur (x, y) = 
             x >= 0 && y >= 0 && x < hauteur && y < largeur
         let shipDansGrille =
@@ -75,7 +74,7 @@ module Navigation =
         let theShipDispo = verifListeCoordDispo theShip.Coords grid theShip
         
         //Verifier le paramètre
-        let theShipParamater = getPerimeter theShip (largeur, hauteur)
+        let theShipParamater = getPerimeter theShip (hauteur, largeur)
         let perimeterDispo = verifListeCoordDispo theShipParamater grid theShip 
         
         // Retourner vrai si tout est OK
@@ -96,8 +95,6 @@ module Navigation =
         // Apeller canPlace avec la nouvelle position : center, direction, name, grid
         canPlace newCenter ship.Facing ship.Name grid 
         
-        // TODO: a supprimer quand tout est bon
-        // false 
 
     let move (ship: Ship) (direction: Direction) : Ship =
         //calculer la nouvelle position
@@ -169,7 +166,7 @@ module Navigation =
         let boat = createShip (xb,yb) ship.Facing ship.Name
         canPlaceSansPerimeter boat.Center boat.Facing boat.Name grid
 
-    //Utilité vs move??
+    //Utilité vs move?? : Reponse de Ju : move c'est lors du placement et moveforwrd dans le jeu
     let moveForward (ship: Ship) : Ship =
         let (xa, ya) = ship.Center
         let newCentre =
