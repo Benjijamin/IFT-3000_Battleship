@@ -17,14 +17,16 @@ module Navigation =
         | North -> 180
         | East -> 270
     
-    let rec getGridDim (grid: Sector Grid) : Coord =
-         match grid with
-            | Empty -> (0, 0) 
-            | Row(line, reste) ->
-                let hauteur_reste, _ = getGridDims reste
-                let hauteur = 1 + hauteur_reste
-                let largeur = List.length line
-                (hauteur, largeur)
+    let rec getGridDims (grid: Sector Grid) : Coord =
+        match grid with
+        | Empty -> (0, 0)
+        | Row(line, reste) ->
+            let (_, hauteur_reste) = getGridDims reste
+            let hauteur = 1 + hauteur_reste
+            let largeur = List.length line
+            (hauteur, largeur)
+
+    
 
     //À mettre dans canPlace si pas utilisée ailleurs
     let rec verifListeCoordDispo (listeCoord: Coord list) (grille: Sector Grid) (boat: Ship) : bool =
@@ -34,33 +36,50 @@ module Navigation =
             | (b,c)::reste -> (match (elementAt grille b c) with
                                | Some (Active (nom, _)) when (nom= nomShip) -> verifListeCoordDispo reste grille boat
                                | Some Clear -> verifListeCoordDispo reste grille boat
+                               | None -> verifListeCoordDispo reste grille boat //ignore les coord en dehors de la grille 
                                | _ -> false)
     
     // Aucune coordonnees ne peut partager une cellule avec le parametre d'un autre bateau
     let canPlaceSansPerimeter (center: Coord) (direction: Direction) (name: Name) (grid: Sector Grid) : bool =
         // Creer le bateau
         let theShip = createShip center direction name 
+        let (largeur, hauteur) = getGridDims grid
         
+        // Verifier si le bateau est dans la grille
+
+        let aInterieur (x, y) = 
+            x >= 0 && y >= 0 && x < hauteur && y < largeur
+        let shipDansGrille =
+            List.forall aInterieur theShip.Coords
+
         // Aucune coordonnees ne peut partager une cellule avec un autre bateau + verifier si coordonnees dans la grille
         let theShipDispo = verifListeCoordDispo theShip.Coords grid theShip 
 
         // Retourner vrai si tout est OK
-        theShipDispo 
+        theShipDispo && shipDansGrille
     
     let canPlace (center: Coord) (direction: Direction) (name: Name) (grid: Sector Grid) : bool =
         
         // Creer le bateau
         let theShip = createShip center direction name 
-        let (theDim_hauteur, theDim_largeur) = getGridDim grid
+        let (largeur, hauteur) = getGridDims grid
         
-        // Aucune coordonnees ne peut partager une cellule avec un autre bateau + verifier si coordonnees dans la grille
+        // Verifier si le bateau est dans la grille
+
+        let aInterieur (x, y) = 
+            x >= 0 && y >= 0 && x < hauteur && y < largeur
+        let shipDansGrille =
+            List.forall aInterieur theShip.Coords
+           
+        // Aucune coordonnees ne peut partager une cellule avec un autre bateau
         let theShipDispo = verifListeCoordDispo theShip.Coords grid theShip
         
-        let theShipParamater = getPerimeter theShip (theDim_hauteur, theDim_largeur) 
+        //Verifier le paramètre
+        let theShipParamater = getPerimeter theShip (largeur, hauteur)
         let perimeterDispo = verifListeCoordDispo theShipParamater grid theShip 
         
         // Retourner vrai si tout est OK
-        theShipDispo  && perimeterDispo
+        theShipDispo && perimeterDispo && shipDansGrille
         
 
     let canMove (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =

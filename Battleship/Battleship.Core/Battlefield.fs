@@ -13,7 +13,7 @@ module Battlefield =
     // Initialiser une grille vide avec des Clear
     let initClearGrid (dims: Dims) : Sector Grid =
         //serparer les dimensions en hauteur et largeur
-        let (largeur, hauteur) = dims
+        let (hauteur, largeur) = dims
         // creer une ligne vide avec la largeur
         let ligneVide = List.init largeur (fun _ -> Clear)
         // creer une grille vide avec la hauteur
