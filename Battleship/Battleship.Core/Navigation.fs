@@ -43,7 +43,7 @@ module Navigation =
     let canPlaceSansPerimeter (center: Coord) (direction: Direction) (name: Name) (grid: Sector Grid) : bool =
         // Creer le bateau
         let theShip = createShip center direction name 
-        let (largeur, hauteur) = getGridDims grid
+        let (hauteur, largeur) = getGridDims grid
         
         // Verifier si le bateau est dans la grille
 
