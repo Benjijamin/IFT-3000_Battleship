@@ -64,21 +64,14 @@ module Navigation =
         let theShip = createShip center direction name 
         let (hauteur, largeur) = getGridDims grid
         
-        // Verifier si le bateau est dans la grille (VerifinGrid ne focntionne pas correctement)
-        let aInterieur (x, y) = 
-            x >= 0 && y >= 0 && x < hauteur && y < largeur
-        let shipDansGrille =
-            List.forall aInterieur theShip.Coords
-           
-        // Aucune coordonnees ne peut partager une cellule avec un autre bateau
-        let theShipDispo = verifListeCoordDispo theShip.Coords grid theShip
-        
+        let theShipDispo = canPlaceSansPerimeter center direction name grid
+       
         //Verifier le paramètre
         let theShipParamater = getPerimeter theShip (hauteur, largeur)
         let perimeterDispo = verifListeCoordDispo theShipParamater grid theShip 
         
         // Retourner vrai si tout est OK
-        theShipDispo && perimeterDispo && shipDansGrille
+        theShipDispo && perimeterDispo 
         
 
     let canMove (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
@@ -116,42 +109,7 @@ module Navigation =
         canPlace boat.Center boat.Facing boat.Name grid 
 
     let rotate (ship: Ship) (direction: Direction) : Ship =
-        // let (dim, k) = getDimKShip ship.Name
-        // let nbrFront = k
-        // let nbrBack = dim - (nbrFront+1)
-        // let (x,y) = ship.Center
         createShip ship.Center direction ship.Name
-        // let rec creationListeN liste accF accB accB2 accC =
-        //     match (accF, accB, accC) with
-        //     | (0,_,1) -> (ship.Center)::(creationListeN liste accF accB accB2 (accC-1))
-        //     | (0,b,0) when b <> 0 -> ((x+accB2),y)::(creationListeN liste accF (accB-1) (accB2+1) accC)
-        //     | (_,_,1) -> ((x-accF),y)::(creationListeN liste (accF-1) accB accB2 accC)
-        //     | (0,0,0) -> []
-        // let rec creationListeS liste accF accB accB2 accC =
-        //     match (accF, accB, accC) with
-        //     | (0,_,1) -> (ship.Center)::(creationListeS liste accF accB accB2 (accC-1))
-        //     | (0,b,0) when b <> 0 -> ((x-accB2),y)::(creationListeS liste accF (accB-1) (accB2+1) accC)
-        //     | (_,_,1) -> ((x+accF),y)::(creationListeS liste (accF-1) accB accB2 accC)
-        //     | (0,0,0) -> []
-        // let rec creationListeW liste accF accB accB2 accC =
-        //     match (accF, accB, accC) with
-        //     | (0,_,1) -> (ship.Center)::(creationListeW liste accF accB accB2 (accC-1))
-        //     | (0,b,0) when b <> 0 -> (x,(y+accB2))::(creationListeW liste accF (accB-1) (accB2+1) accC)
-        //     | (_,_,1) -> (x,(y-accF))::(creationListeW liste (accF-1) accB accB2 accC)
-        //     | (0,0,0) -> []
-        // let rec creationListeE liste accF accB accB2 accC =
-        //     match (accF, accB, accC) with
-        //     | (0,_,1) -> (ship.Center)::(creationListeE liste accF accB accB2 (accC-1))
-        //     | (0,b,0) when b <> 0 -> (x,(y-accB2))::(creationListeE liste accF (accB-1) (accB2+1) accC)
-        //     | (_,_,1) -> (x,(y+accF))::(creationListeE liste (accF-1) accB accB2 accC)
-        //     | (0,0,0) -> []
-        // let listeC =
-        //     match direction with
-        //     | North -> creationListeN [] nbrFront nbrBack 1 1
-        //     | South -> creationListeS [] nbrFront nbrBack 1 1
-        //     | West -> creationListeW [] nbrFront nbrBack 1 1
-        //     | East -> creationListeE [] nbrFront nbrBack 1 1
-        // { Coords = listeC; Center = (x, y); Facing = direction; Name = ship.Name }
 
     // Faire une fonction pour trouver nouveau centre (utilisé aussi pour move et moveforward)
     //Match with direction mouvement, puis match facing
@@ -166,7 +124,6 @@ module Navigation =
         let boat = createShip (xb,yb) ship.Facing ship.Name
         canPlaceSansPerimeter boat.Center boat.Facing boat.Name grid
 
-    //Utilité vs move?? : Reponse de Ju : move c'est lors du placement et moveforwrd dans le jeu
     let moveForward (ship: Ship) : Ship =
         let (xa, ya) = ship.Center
         let newCentre =
@@ -176,27 +133,6 @@ module Navigation =
             | West -> (xa,ya-1)
             | East -> (xa,ya+1)
         createShip newCentre ship.Facing ship.Name
-        
-        // let (dim, k) = getDimKShip ship.Name
-        // let nbrFront = k
-        // let (xa, ya) = ship.Center
-        // let rec creationListeN liste acc =
-        //     match (liste, acc) with
-        //     | (_, 0) -> liste::
-        //     | ()
-        // let rec creationListeS liste accF accB accB2 accC =
-        //     
-        // let rec creationListeW liste accF accB accB2 accC =
-        //     
-        // let rec creationListeE liste accF accB accB2 accC =
-        //     
-        // let (listeC, centre) =
-        //     match direction with
-        //     | North -> (creationListeN ship.Coords dim, (xa-1,ya))
-        //     | South -> (creationListeS ship.Coords dim, (xa+1,ya))
-        //     | West -> (creationListeW ship.Coords dim, (xa,ya-1))
-        //     | East -> (creationListeE ship.Coords dim, (xa,ya+1))
-        // { Coords = listeC; Center = centre; Facing = ship.Facing; Name = ship.Name }
         
     let getNextDirection (current: Direction) (rotation: Rotation) : Direction =
         match (current, rotation) with
