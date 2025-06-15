@@ -50,3 +50,13 @@ module Grid =
         coords
         |> List.mapi f
         |> Map.ofList
+
+    let rec filtrage f d listeNF listeCRep =
+        match listeNF with
+        | [] -> List.rev listeCRep
+        | (a,b)::reste when (f d (a,b)) ->
+            begin
+                let listeCRep = (a,b)::listeCRep
+                filtrage f d reste listeCRep
+            end
+        | (_,_)::reste -> filtrage f d reste listeCRep
