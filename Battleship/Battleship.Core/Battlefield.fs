@@ -19,7 +19,10 @@ module Battlefield =
         
     let addShip (ship: Ship) (grid: Sector Grid) : Sector Grid =
         
-        let coordIndexMap =  makeCoordIndexMap ship.Coords (fun i coord -> (coord, i))
+        let coordIndexMap =
+            ship.Coords
+            |> List.mapi (fun i coord -> (coord, i))
+            |> Map.ofList
         
         let updateSector sector (x, y) =
             match Map.tryFind (x, y) coordIndexMap with
@@ -57,20 +60,11 @@ module Battlefield =
             parcoursGridAvecIndex (lambda) [] grid
 
         let groupShips (sectors : (Coord * Sector) list) : ShipPieces list =
-            //let groupByName (sectors : (Coord * Sector) list) (name : Name) : ShipPieces =
-            //    let group = (name, [])  
-            //    let rec loop s g =
-            //        match s with
-            //        | [] -> g
-            //        | (c, Active(n, i))::t when n = name -> loop t (n, (snd g)@[(c, i)])
-            //        | h::t -> loop t g
-            //    loop sectors group
             let groupByName (sectors : (Coord * Sector) list) (name : Name) : ShipPieces =
                 let filtre (targetName: Name) (coord, sector) =
                     match sector with
                     | Active(n, _) -> n = targetName
                     | _ -> false
-
                 let resultat = filtrage filtre name sectors []
                 let pieces = List.map (fun (c, Active(_,i)) -> (c, i)) resultat
                 (name, pieces)

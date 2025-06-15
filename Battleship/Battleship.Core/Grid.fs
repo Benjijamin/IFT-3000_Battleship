@@ -46,13 +46,7 @@ module Grid =
 
         loopColumn acc 0 grid
 
-    // utiliser dans la fonction addShip. Juliette
-    let makeCoordIndexMap (coords: 'a list)(f: int -> 'a -> 'b * int) =
-        coords
-        |> List.mapi f
-        |> Map.ofList
-    
-    //utiliser dans la fonction verifListeCoordDispo. Juliette
+
     let rec filtrage f d listeNF listeCRep =
         match listeNF with
         | [] -> List.rev listeCRep
@@ -63,7 +57,7 @@ module Grid =
             end
         | (_,_)::reste -> filtrage f d reste listeCRep
 
-    // utiliser dans la fonction addShip et replaceShip. Juliette
+ 
     let mapGridWithIndex (f: 'a -> Coord -> 'a) (grid: 'a Grid) : 'a Grid =
         let rec loop col grid =
             match grid with
