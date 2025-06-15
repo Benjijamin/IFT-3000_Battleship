@@ -35,25 +35,26 @@ module Navigation =
                                | None -> verifListeCoordDispo reste grille boat 
                                | _ -> false)
     
-    let canPlaceSansPerimeter (center: Coord) (direction: Direction) (name: Name) (grid: Sector Grid) : bool =
+    let canPlacePerimeter (canPlace: Coord -> Direction -> Name -> Sector Grid -> bool) =
+        fun center direction name grid ->
+            if not (canPlace center direction name grid) then false //si canPlace sans périmètre échoue, on ne peut pas placer
+            else 
+                let (hauteur, largeur) = getGridDims grid
+                let ship = createShip center direction name
+                let perimeter = getPerimeter ship (hauteur, largeur)
+                verifListeCoordDispo perimeter grid ship //vérifie si le périmètre est libre
+    
+    let canPlace (center: Coord) (direction: Direction) (name: Name) (grid: Sector Grid) : bool =
         let theShip = createShip center direction name 
         let dims = getGridDims grid  
         let shipDansGrille = List.forall (aInterieur dims) theShip.Coords
         let theShipDispo = verifListeCoordDispo theShip.Coords grid theShip 
         theShipDispo && shipDansGrille
-    
-    let canPlace (center: Coord) (direction: Direction) (name: Name) (grid: Sector Grid) : bool =
-        let theShip = createShip center direction name 
-        let (hauteur, largeur) = getGridDims grid
-        let theShipDispo = canPlaceSansPerimeter center direction name grid
-        let theShipParamater = getPerimeter theShip (hauteur, largeur)
-        let perimeterDispo = verifListeCoordDispo theShipParamater grid theShip 
-        theShipDispo && perimeterDispo 
         
     let canMove (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
         let (x,y) = ship.Center
         let newCenter = getCenter (x, y) direction
-        canPlace newCenter ship.Facing ship.Name grid 
+        canPlacePerimeter canPlace newCenter ship.Facing ship.Name grid 
         
     let move (ship: Ship) (direction: Direction) : Ship =
         let (x,y) = ship.Center
@@ -62,7 +63,7 @@ module Navigation =
 
     let canRotate (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
         let boat = createShip ship.Center direction ship.Name
-        canPlace boat.Center boat.Facing boat.Name grid 
+        canPlacePerimeter canPlace boat.Center boat.Facing boat.Name grid 
 
     let rotate (ship: Ship) (direction: Direction) : Ship =
         createShip ship.Center direction ship.Name
@@ -71,7 +72,7 @@ module Navigation =
         let (xa, ya) = ship.Center
         let (xb,yb) = getCenter (xa, ya) ship.Facing
         let boat = createShip (xb,yb) ship.Facing ship.Name
-        canPlaceSansPerimeter boat.Center boat.Facing boat.Name grid
+        canPlace boat.Center boat.Facing boat.Name grid
 
     let moveForward (ship: Ship) : Ship =
         let (xa, ya) = ship.Center
