@@ -32,18 +32,19 @@ module Grid =
             let largeur = List.length ligne
             (hauteur, largeur)
 
-    let parcoursGrid (lambda : 'a -> 'b -> 'b) (acc: 'b) (grid: 'a Grid) : 'b =
-        let rec loopColumn acc grid =
+
+    let parcoursGridAvecIndex (lambda : 'a -> 'b -> Coord -> 'b) (acc: 'b) (grid: 'a Grid) : 'b =
+        let rec loopColumn acc columnIndex grid =
             match grid with
             | Empty -> acc
             | Row(ligne, reste) ->
-                let rec loopRow acc liste =
+                let rec loopRow acc rowIndex liste =
                     match liste with
                     | [] -> acc
-                    | h::t -> loopRow (lambda h acc) t
-                loopColumn (loopRow acc ligne) reste
+                    | h::t -> loopRow (lambda h acc (columnIndex, rowIndex)) (rowIndex + 1) t
+                loopColumn (loopRow acc 0 ligne) (columnIndex + 1) reste
 
-        loopColumn acc grid
+        loopColumn acc 0 grid
 
     // utiliser dans la fonction addShip. Juliette
     let makeCoordIndexMap (coords: 'a list)(f: int -> 'a -> 'b * int) =

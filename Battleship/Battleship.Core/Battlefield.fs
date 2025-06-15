@@ -60,19 +60,13 @@ module Battlefield =
     let extractData (grid: Sector Grid) : Data =
         let shipsToExtract = Spy::PatrolBoat::Destroyer::Submarine::Cruiser::AircraftCarrier::[]
 
-        let getActiveSectors (grid : Sector Grid) : (Coord * Sector) list = 
-            let rec loopX r l x y = 
-                match r with
-                | [] -> l
-                | Active(name, i)::t -> loopX t (l@[((y, x), Active(name, i))]) (x+1) y
-                | _::t -> loopX t l (x+1) y
+        let getActiveSectors (grid : Sector Grid) : (Coord * Sector) list =
+            let lambda sector acc coords =
+                match sector with
+                | Active(name, i) -> acc@[(coords, sector)]
+                | Clear -> acc
 
-            let rec loopY g l y =
-                match g with
-                | Empty -> l
-                | Row(r, n) -> loopY n (l@(loopX r [] 0 y)) (y+1)
-
-            loopY grid [] 0
+            parcoursGridAvecIndex (lambda) [] grid
 
         let groupShips (sectors : (Coord * Sector) list) : ShipPieces list =
             let groupByName (sectors : (Coord * Sector) list) (name : Name) : ShipPieces =
