@@ -79,19 +79,8 @@ module Ship =
             match (dim+2) with
             | 0 -> liste_rep
             | _ -> (x+1,y-acc)::(x-1,y-acc)::(prepListeH liste_rep (acc+1) (dim-1))
-        
         let listeA =
             match sens with
             | North | South -> prepListeV liste_repV -1 dimShip
             | East | West -> prepListeH liste_repH -1 dimShip
-        
-        let rec filtrage listeNF listeCRep =
-            match listeNF with
-            | [] -> listeCRep
-            | (a,b)::reste when (aInterieur dims (a,b)) ->
-                begin
-                    let listeCRep = (a,b)::listeCRep
-                    filtrage reste listeCRep
-                end
-            | (_,_)::reste -> filtrage reste listeCRep
-        filtrage listeA []
+        filtrage aInterieur dims listeA []
