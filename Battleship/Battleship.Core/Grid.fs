@@ -62,3 +62,13 @@ module Grid =
                 filtrage f d reste listeCRep
             end
         | (_,_)::reste -> filtrage f d reste listeCRep
+
+    // utiliser dans la fonction addShip et replaceShip. Juliette
+    let mapGridWithIndex (f: 'a -> Coord -> 'a) (grid: 'a Grid) : 'a Grid =
+        let rec loop col grid =
+            match grid with
+            | Empty -> Empty
+            | Row (ligne, reste) ->
+                let newLigne = List.mapi (fun row sector -> f sector (col, row)) ligne
+                Row (newLigne, loop (col + 1) reste)
+        loop 0 grid

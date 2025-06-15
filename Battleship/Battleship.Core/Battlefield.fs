@@ -21,33 +21,21 @@ module Battlefield =
         
         let coordIndexMap =  makeCoordIndexMap ship.Coords (fun i coord -> (coord, i))
         
-        //let coordIndexMap =
-        //    ship.Coords
-        //    |> List.mapi (fun i coord -> (coord, i))
-        //    |> Map.ofList
-        
-        let rec updateGrid hauteur grid =
-            match grid with
-            | Empty -> Empty
-            | Row (ligne, reste) ->
-                let newLigne = List.mapi (fun largeur sector ->
-                    match Map.tryFind (hauteur, largeur) coordIndexMap with
-                    | Some i -> Active (ship.Name, i)
-                    | None -> sector ) ligne
-                Row (newLigne, updateGrid (hauteur + 1) reste)
-        updateGrid 0 grid
+        let updateSector sector (x, y) =
+            match Map.tryFind (x, y) coordIndexMap with
+            | Some i -> Active (ship.Name, i)  // Pose le bateau ici
+            | None -> sector                    // Sinon laisse tel quel
+
+        mapGridWithIndex updateSector grid
+      
 
     let replaceShip (ship: Ship) (grid: Sector Grid) : Sector Grid =
-        let rec removeShip grid =
-            match grid with
-            | Empty -> Empty
-            | Row (ligne, reste) ->
-                let newLigne = List.map (fun sector ->
-                    match sector with
-                    | Active (name, _) when name = ship.Name -> Clear
-                    | _ -> sector) ligne
-                Row (newLigne, removeShip reste)
-        let cleanedGrid = removeShip grid
+        let cleanedGrid =
+            mapGridWithIndex (fun sector _ ->
+                match sector with
+                | Active (name, _) when name = ship.Name -> Clear
+                | _ -> sector
+            ) grid
         addShip ship cleanedGrid
         
 
