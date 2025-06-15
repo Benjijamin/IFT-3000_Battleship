@@ -44,3 +44,9 @@ module Grid =
                 loopColumn (loopRow acc ligne) reste
 
         loopColumn acc grid
+
+    // utiliser dans la fonction addShip. Juliette
+    let makeCoordIndexMap (coords: 'a list)(f: int -> 'a -> 'b * int) =
+        coords
+        |> List.mapi f
+        |> Map.ofList

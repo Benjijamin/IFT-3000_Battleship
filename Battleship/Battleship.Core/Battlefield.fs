@@ -18,10 +18,13 @@ module Battlefield =
         construireGrille hauteur
         
     let addShip (ship: Ship) (grid: Sector Grid) : Sector Grid =
-        let coordIndexMap =
-            ship.Coords
-            |> List.mapi (fun i coord -> (coord, i))
-            |> Map.ofList
+        
+        let coordIndexMap =  makeCoordIndexMap ship.Coords (fun i coord -> (coord, i))
+        
+        //let coordIndexMap =
+        //    ship.Coords
+        //    |> List.mapi (fun i coord -> (coord, i))
+        //    |> Map.ofList
         
         let rec updateGrid hauteur grid =
             match grid with
