@@ -45,9 +45,6 @@ module Grid =
                 loopColumn (loopRow acc 0 ligne) (columnIndex + 1) reste
 
         loopColumn acc 0 grid
-        
-    let parcoursGrid (lambda : 'a -> 'b -> 'b) (acc: 'b) (grid: 'a Grid) : 'b =
-        parcoursGridAvecIndex (fun a b c -> lambda a b) acc grid
 
     // utiliser dans la fonction addShip. Juliette
     let makeCoordIndexMap (coords: 'a list)(f: int -> 'a -> 'b * int) =
