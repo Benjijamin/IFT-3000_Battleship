@@ -31,3 +31,11 @@ module Grid =
             let hauteur = 1 + hauteur_reste
             let largeur = List.length ligne
             (hauteur, largeur)
+
+    // utiliser dans la fonction addShip. Juliette
+    let makeCoordIndexMap (coords: 'a list)(f: int -> 'a -> 'b * int) =
+        coords
+        |> List.mapi f
+        |> Map.ofList
+
+    
