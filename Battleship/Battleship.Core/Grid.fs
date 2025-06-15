@@ -50,7 +50,8 @@ module Grid =
         coords
         |> List.mapi f
         |> Map.ofList
-
+    
+    //utiliser dans la fonction verifListeCoordDispo. Juliette
     let rec filtrage f d listeNF listeCRep =
         match listeNF with
         | [] -> List.rev listeCRep
