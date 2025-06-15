@@ -53,7 +53,7 @@ module Grid =
         |> Map.ofList
     
     //utiliser dans la fonction verifListeCoordDispo. Juliette
-    let rec filtrage f d listeNF listeCRep =
+    let rec filtrage (f : 'a -> 'b * 'c -> bool) (d : 'a) (listeNF : 'b * 'c list) (listeCRep : 'b * 'c) : 'b * 'c list =
         match listeNF with
         | [] -> List.rev listeCRep
         | (a,b)::reste when (f d (a,b)) ->
