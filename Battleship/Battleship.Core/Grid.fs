@@ -49,17 +49,6 @@ module Grid =
     let parcoursGrid (lambda : 'a -> 'b -> 'b) (acc: 'b) (grid: 'a Grid) : 'b =
         parcoursGridAvecIndex (fun a b c -> lambda a b) acc grid
 
-        //let rec loopX r l x y = 
-        //    match r with
-        //    | [] -> l
-        //    | Active(name, i)::t -> loopX t (l@[((y, x), Active(name, i))]) (x+1) y
-        //    | _::t -> loopX t l (x+1) y
-
-        //let rec loopY g l y =
-        //    match g with
-        //    | Empty -> l
-        //    | Row(r, n) -> loopY n (l@(loopX r [] 0 y)) (y+1)
-
     // utiliser dans la fonction addShip. Juliette
     let makeCoordIndexMap (coords: 'a list)(f: int -> 'a -> 'b * int) =
         coords
