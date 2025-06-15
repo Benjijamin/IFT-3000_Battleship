@@ -23,8 +23,8 @@ module Battlefield =
         
         let updateSector sector (x, y) =
             match Map.tryFind (x, y) coordIndexMap with
-            | Some i -> Active (ship.Name, i)  // Pose le bateau ici
-            | None -> sector                    // Sinon laisse tel quel
+            | Some i -> Active (ship.Name, i)  
+            | None -> sector                    
 
         mapGridWithIndex updateSector grid
       
@@ -57,14 +57,23 @@ module Battlefield =
             parcoursGridAvecIndex (lambda) [] grid
 
         let groupShips (sectors : (Coord * Sector) list) : ShipPieces list =
+            //let groupByName (sectors : (Coord * Sector) list) (name : Name) : ShipPieces =
+            //    let group = (name, [])  
+            //    let rec loop s g =
+            //        match s with
+            //        | [] -> g
+            //        | (c, Active(n, i))::t when n = name -> loop t (n, (snd g)@[(c, i)])
+            //        | h::t -> loop t g
+            //    loop sectors group
             let groupByName (sectors : (Coord * Sector) list) (name : Name) : ShipPieces =
-                let group = (name, [])  
-                let rec loop s g =
-                    match s with
-                    | [] -> g
-                    | (c, Active(n, i))::t when n = name -> loop t (n, (snd g)@[(c, i)])
-                    | h::t -> loop t g
-                loop sectors group
+                let filtre (targetName: Name) (coord, sector) =
+                    match sector with
+                    | Active(n, _) -> n = targetName
+                    | _ -> false
+
+                let resultat = filtrage filtre name sectors []
+                let pieces = List.map (fun (c, Active(_,i)) -> (c, i)) resultat
+                (name, pieces)
 
             let rec loop stg l =
                 match stg with

@@ -24,7 +24,6 @@ module Navigation =
         | East -> (fst center, snd center + 1)
         | West -> (fst center, snd center - 1)
     
-
     let rec verifListeCoordDispo (listeCoord: Coord list) (grille: Sector Grid) (boat: Ship) : bool =
         let f _ (b,c) =
             match elementAt grille b c with
@@ -49,6 +48,7 @@ module Navigation =
         let theShipParamater = getPerimeter theShip (hauteur, largeur)
         let perimeterDispo = verifListeCoordDispo theShipParamater grid theShip 
         theShipDispo && perimeterDispo 
+    
     let canMove (ship: Ship) (direction: Direction) (grid: Sector Grid) : bool =
         let (x,y) = ship.Center
         let newCenter = getCenter (x, y) direction
