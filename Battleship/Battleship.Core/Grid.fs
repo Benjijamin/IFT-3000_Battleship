@@ -31,3 +31,16 @@ module Grid =
             let hauteur = 1 + hauteur_reste
             let largeur = List.length ligne
             (hauteur, largeur)
+
+    let parcoursGrid (lambda : 'a -> 'b -> 'b) (acc: 'b) (grid: 'a Grid) : 'b =
+        let rec loopColumn acc grid =
+            match grid with
+            | Empty -> acc
+            | Row(ligne, reste) ->
+                let rec loopRow acc liste =
+                    match liste with
+                    | [] -> acc
+                    | h::t -> loopRow (lambda h acc) t
+                loopColumn (loopRow acc ligne) reste
+
+        loopColumn acc grid
